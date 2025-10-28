@@ -26,7 +26,8 @@ const toPayload = (form) => {
     leadActor1: form.leadActor1 || null, // leadActor1 or null
     leadActor2: form.leadActor2 || null, // leadActor2 or null
     releaseDate: form.releaseDate || null, // releaseDate string "YYYY-MM-DD" or null
-    salesMillions: form.salesMillions === "" ? null : Number(form.salesMillions) // convert sales to Number or null
+    salesMillions: form.salesMillions === "" ? null : Number(form.salesMillions), // convert sales to Number or null
+    posterUrl: form.posterUrl || null // NEW
   };
 
   if (!SEND_SNAKE_CASE) return payload; // return camelCase payload unless snake_case requested
@@ -39,7 +40,8 @@ const toPayload = (form) => {
     lead_actor_1: payload.leadActor1,
     lead_actor_2: payload.leadActor2,
     release_date: payload.releaseDate,
-    sales_millions: payload.salesMillions
+    sales_millions: payload.salesMillions,
+    poster_url: payload.posterUrl
   };
 };
 
@@ -51,7 +53,8 @@ const emptyForm = {
   leadActor1: "", // empty lead actor 1
   leadActor2: "", // empty lead actor 2
   releaseDate: "", // empty release date
-  salesMillions: "" // empty sales field
+  salesMillions: "", // empty sales field
+  posterUrl: ""
 };
 
 export default function AdminMovies() {
@@ -183,6 +186,15 @@ export default function AdminMovies() {
           <input type="date" name="releaseDate" placeholder="Release Date" value={form.releaseDate} onChange={onChange} /> {/* date input */}
         </div>
 
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
+          <input
+            name="posterUrl"
+            placeholder="Poster URL"
+            value={form.posterUrl}
+            onChange={onChange}
+          />
+        </div>
+
         {/* Controls: sales, add, clear, delete all */}
         <div style={{ display: "flex", gap: 8 }}>
           <input type="number" step="0.01" name="salesMillions" placeholder="Sales (millions)" value={form.salesMillions} onChange={onChange} /> {/* numeric sales input */}
@@ -213,6 +225,7 @@ export default function AdminMovies() {
               <th style={{ border: "1px solid #ddd", padding: 8 }}>Lead 2</th>
               <th style={{ border: "1px solid #ddd", padding: 8 }}>Release</th>
               <th style={{ border: "1px solid #ddd", padding: 8 }}>Sales ($M)</th>
+              <th style={{ border: "1px solid #ddd", padding: 8 }}>Poster URL ($M)</th>
               <th style={{ border: "1px solid #ddd", padding: 8 }}>Actions</th>
             </tr>
           </thead>
@@ -227,6 +240,14 @@ export default function AdminMovies() {
                 <td style={{ border: "1px solid #eee", padding: 8 }}>{m.leadActor2 ?? ""}</td> {/* lead actor 2 */}
                 <td style={{ border: "1px solid #eee", padding: 8 }}>{m.releaseDate ?? ""}</td> {/* release date */}
                 <td style={{ border: "1px solid #eee", padding: 8 }}>{m.salesMillions ?? ""}</td> {/* sales millions */}
+
+                  <td>
+                  {m.posterUrl ? (
+                    <a href={m.posterUrl} target="_blank" rel="noopener noreferrer">View Poster</a>
+                  ) : (
+                    "—"
+                  )}
+                </td>
 
                 {/* Actions: delete single movie */}
                 <td style={{ border: "1px solid #eee", padding: 8, whiteSpace: "nowrap" }}>
