@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Home from "./Home";
+import AdminMovies from "./AdminMovies";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+/**
+ * App entry with routing.
+ * Maps the root path "/" to the Home component.
+ * Add more routes as your app grows.
+ */
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <BrowserRouter>
 
-export default App
+      <nav style={{padding:12, borderBottom:"1px solid #eee"}}>
+          <Link to="/" style={{marginRight:12}}>Home</Link>
+          <Link to="/admin">Admin</Link>
+        </nav>
+
+        
+      <Routes>
+        {/* Homepage route */}
+        <Route path="/" element={<Home />} />
+
+        {/* Admin route */}
+        <Route path="/admin" element={<AdminMovies />} />
+
+        {/* Example: <Route path="/movies" element={<Movies />} /> */}
+
+      </Routes>
+    </BrowserRouter>
+  );
+}
