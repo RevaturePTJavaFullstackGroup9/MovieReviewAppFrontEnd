@@ -6,6 +6,7 @@
 
 import React, { useEffect, useState } from "react";
 import MovieGrid from "./MovieGrid"; // child component that displays movies in a grid
+import AuthBox from "./AuthBox";
 
 export default function Home() {
   // local component state
@@ -50,6 +51,8 @@ export default function Home() {
 
       <h1>Flick Feed</h1>
       <p>Welcome to the Movie Review App!</p>
+
+      <AuthBox />
 
       {/* Show a simple loading indicator while fetching */}
       {loading && <div>Loading movies…</div>}

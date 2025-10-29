@@ -6,6 +6,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+//React component imports
+import Reviews from "./Reviews";
+import LeaveReview from "./LeaveReview";
+
 const PLACEHOLDER = "/poster-placeholder.png"; // fallback image when poster is missing or fails to load
 
 export default function MovieDetails() {
@@ -144,6 +148,11 @@ export default function MovieDetails() {
                             {JSON.stringify(movie, null, 2)}
                         </pre>
                     </details>
+
+                    
+                    {/* MOVIEW REVIEWS IMPLEMENTATION*/}
+                    <Reviews movieId={id} />
+                    <LeaveReview movieId={id} />
                 </div>
             </div>
         </div>
