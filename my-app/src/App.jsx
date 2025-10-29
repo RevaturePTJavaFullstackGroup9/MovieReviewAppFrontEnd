@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import AdminMovies from "./AdminMovies";
+import MovieDetails from "./MovieDetails";
 import ReviewPage from "./components/ReviewPage/ReviewPage";
 
 /**
@@ -21,6 +22,8 @@ export default function App() {
       <Routes>
         {/* Homepage route */}
         <Route path="/" element={<Home />} />
+
+        <Route path="/movies/:id" element={<MovieDetails />} />
 
         {/* Admin route */}
         <Route path="/admin" element={<AdminMovies />} />
