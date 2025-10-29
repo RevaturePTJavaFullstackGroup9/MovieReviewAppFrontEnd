@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import AdminMovies from "./AdminMovies";
 import MovieDetails from "./MovieDetails";
+import ReviewPage from "./components/ReviewPage/ReviewPage";
 
 /**
  * App entry with routing.
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/admin" element={<AdminMovies />} />
 
         {/* Example: <Route path="/movies" element={<Movies />} /> */}
+        <Route path="/movie_reviews/:movieId" element={<ReviewPage/>} />
 
       </Routes>
     </BrowserRouter>
