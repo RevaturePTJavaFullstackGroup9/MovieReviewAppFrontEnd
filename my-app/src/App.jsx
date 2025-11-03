@@ -3,6 +3,7 @@ import Home from "./Home";
 import AdminMovies from "./AdminMovies";
 import MovieDetails from "./MovieDetails";
 import ReviewPage from "./components/ReviewPage/ReviewPage";
+import Login from "./Login";
 
 /**
  * App entry with routing.
@@ -16,6 +17,7 @@ export default function App() {
       <nav style={{padding:12, borderBottom:"1px solid #eee"}}>
           <Link to="/" style={{marginRight:12}}>Home</Link>
           <Link to="/admin">Admin</Link>
+          <Link to="/login" style={{ marginRight: 12 }}>Login</Link>
         </nav>
 
         
@@ -30,6 +32,8 @@ export default function App() {
 
         {/* Example: <Route path="/movies" element={<Movies />} /> */}
         <Route path="/movie_reviews/:movieId" element={<ReviewPage/>} />
+
+        <Route path="/login" element={<Login />} />
 
       </Routes>
     </BrowserRouter>
