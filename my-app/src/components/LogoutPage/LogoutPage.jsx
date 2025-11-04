@@ -7,14 +7,15 @@ import { useNavigate } from 'react-router-dom';
 const LogoutPage = () => {
     
     const {setJwt} = React.useContext(JwtContext);
-    const {setUser} = React.useContext(UserContext);
+    //const {setUser} = React.useContext(UserContext);
     const navigate = useNavigate();
+
 
     React.useEffect(()=>{
         setUser(null);
-        setJwt('');
+        //setJwt('');
         setTimeout(()=>{navigate("/")}, 3000)
-    }, [])
+    }, []);
     
     return (<>
         <h2>Now logging you out...</h2>

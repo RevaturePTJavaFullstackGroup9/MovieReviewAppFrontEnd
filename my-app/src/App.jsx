@@ -57,8 +57,7 @@ export default function App() {
         <nav style={{padding:12, borderBottom:"1px solid #eee"}}>
           <Link to="/" style={{marginRight:12}}>Home</Link>
 
-           <Link to="/register">Register</Link>
-
+          <Link to="/register" style={{ marginRight: 12 }}>Register</Link>
 
           <Link to="/login" style={{ marginRight: 12 }}>Login</Link>
 
@@ -81,8 +80,9 @@ export default function App() {
           {/* Example: <Route path="/movies" element={<Movies />} /> */}
           <Route path="/movie_reviews/:movieId" element={<ReviewPage/>} />
 
+          {/* 
           <Route path="/login" element={<LoginPage />} />
-          
+          */}
           <Route path="/signup" element={<SignupPage/>}/>
 
           <Route path="/logout" element={<LogoutPage/>}/>

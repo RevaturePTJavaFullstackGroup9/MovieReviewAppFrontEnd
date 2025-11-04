@@ -1,5 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+
+const handleSubmit = (event, form, navigate) => {
+    event.preventDefault();
+
+    const signupRequestObject = {
+        "username": form.username,
+        "email": form.email,
+        "password": form.password,
+        "role": "USER"
+    }
+
+    axios.post(`http://localhost:8080/api/auth/signup`, signupRequestObject)
+        .then(
+            response => {
+                if (response.status != 200){
+                    throw new Error(`Error signing up, expected 200 status code, but recieved ${response.status}`);
+                }
+                console.log(`Succesfully signed up! Server Response= "${response.data.message}", Status=${response.status}`)
+                setTimeout( () => {
+                    navigate("/login")
+                }, 3000)
+            }
+        )
+        .catch(error => {
+            if (error.response){
+                console.error(`Server responded with an error. Raw Data=${JSON.stringify(error.response.data)}, status code: ${error.response.status}`)
+            }
+            else if (error.request){
+                console.error(`No response received from server!`)
+            }
+            else{
+                console.error(`Unexpected error occorued during signup, error="${error}"`)
+            }
+        })
+};
 
 export default function Register() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -11,6 +47,7 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  /*
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -34,11 +71,12 @@ export default function Register() {
       setError(err.message);
     }
   };
+  */
 
   return (
     <div className="auth-container">
       <h2>Create an Account</h2>
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={e => handleSubmit(e, form, navigate)} className="auth-form">
         <input
           type="text"
           name="username"

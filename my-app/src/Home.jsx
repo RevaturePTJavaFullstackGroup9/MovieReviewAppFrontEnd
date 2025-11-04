@@ -52,8 +52,10 @@ export default function Home() {
       <h1>Flick Feed</h1>
       <p>Welcome to the Movie Review App!</p>
 
+      {/** 
       <AuthBox />
-
+      */}
+      
       {/* Show a simple loading indicator while fetching */}
       {loading && <div>Loading movies…</div>}
 
