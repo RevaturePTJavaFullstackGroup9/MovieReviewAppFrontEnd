@@ -25,6 +25,7 @@ const handleSubmit = (event, username, password, setSubmissionStatus, setJwt, na
                     email: response.data.email,
                     token: response.data.token,
                     username: response.data.username,
+                    role: response.data.role,
                 };
                 setUser(user);
                 setSubmissionStatus("SUCCESS");

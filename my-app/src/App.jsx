@@ -54,7 +54,7 @@ export default function App() {
 
         <nav style={{padding:12, borderBottom:"1px solid #eee"}}>
           <Link to="/" style={{marginRight:12}}>Home</Link>
-          <Link to="/admin" style={{marginRight:12}}>Admin</Link>
+          {user?.role?.includes('ADMIN') ? <Link to="/admin" style={{marginRight:12}}>Admin</Link> : <></>}
           {user ? <Link to="/logout">Logout</Link> : <></> }
           <h5>{user ? `Welcome, ${user.username}` : "Not Logged In"}</h5>
         </nav>

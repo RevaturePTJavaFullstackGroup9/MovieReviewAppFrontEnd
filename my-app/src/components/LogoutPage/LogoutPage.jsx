@@ -10,10 +10,12 @@ const LogoutPage = () => {
     const {setUser} = React.useContext(UserContext);
     const navigate = useNavigate();
 
-    setUser(null);
-    setJwt('');
+    React.useEffect(()=>{
+        setUser(null);
+        setJwt('');
+        setTimeout(()=>{navigate("/")}, 3000)
+    }, [])
     
-    setTimeout(()=>{navigate("/")}, 3000)
     return (<>
         <h2>Now logging you out...</h2>
         <h2>Returning to the home page in 3 seconds...</h2>
