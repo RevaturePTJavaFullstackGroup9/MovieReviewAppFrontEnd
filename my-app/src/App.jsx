@@ -7,6 +7,8 @@ import ReviewPage from "./components/ReviewPage/ReviewPage";
 import LoginPage from "./components/LoginPage/LoginPage";
 import SignupPage from "./components/LoginPage/SignupPage";
 import JwtContext from "./components/Context/JwtContext";
+import UserContext from "./components/Context/UserContext";
+import LogoutPage from "./components/LogoutPage/LogoutPage";
 
 /**
  * App entry with routing.
@@ -16,25 +18,45 @@ import JwtContext from "./components/Context/JwtContext";
 export default function App() {
   // Create Contexts here
   const [jwt, setJwt] = React.useState(() => {
-    return sessionStorage.getItem('jwt') ?? '';
+    return localStorage.getItem('jwt') ?? '';
   });
   const jwtContext = {jwt: jwt, setJwt: setJwt};
-  
+
+  const [user, setUser] = React.useState(() => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('user'))
+      return storedUser
+    }
+    catch (e){
+      return null;
+    }
+  })
+  const userContext = {user: user, setUser: setUser};
+
   React.useEffect(
     () => {
-      sessionStorage.setItem('jwt', jwt);
+      localStorage.setItem('jwt', jwt);
     }, [jwt]
   ); 
+
+  React.useEffect (
+    () => {
+      localStorage.setItem('user', JSON.stringify(user))
+    }, 
+    [user]
+  )
 
 
   return (
     <JwtContext value={jwtContext}>
+      <UserContext value={userContext}>
       <BrowserRouter>
 
         <nav style={{padding:12, borderBottom:"1px solid #eee"}}>
           <Link to="/" style={{marginRight:12}}>Home</Link>
-          <Link to="/admin">Admin</Link>
-          <h5>{jwt}</h5>
+          <Link to="/admin" style={{marginRight:12}}>Admin</Link>
+          {user ? <Link to="/logout">Logout</Link> : <></> }
+          <h5>{user ? `Welcome, ${user.username}` : "Not Logged In"}</h5>
         </nav>
 
           
@@ -51,10 +73,14 @@ export default function App() {
           <Route path="/movie_reviews/:movieId" element={<ReviewPage/>} />
 
           <Route path="/login" element={<LoginPage />} />
+          
           <Route path="/signup" element={<SignupPage/>}/>
+
+          <Route path="/logout" element={<LogoutPage/>}/>
 
         </Routes>
       </BrowserRouter>
+      </UserContext>
     </JwtContext>
   );
 }

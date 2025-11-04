@@ -3,8 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import JwtContext from '../Context/JwtContext';
+import UserContext from '../Context/UserContext';
 
-const handleSubmit = (event, username, password, setSubmissionStatus, setJwt, navigate) => {
+const handleSubmit = (event, username, password, setSubmissionStatus, setJwt, navigate, setUser) => {
     event.preventDefault();
 
     const loginRequest = {
@@ -18,8 +19,16 @@ const handleSubmit = (event, username, password, setSubmissionStatus, setJwt, na
                 console.log(`Succesfully logged in! Response= ${JSON.stringify(response.data)}`)
                 // Set Auth Token Globally here
                 setJwt(response.data.token);
+                console.log(response.data);
+                const user = {
+                    id: response.data.id,
+                    email: response.data.email,
+                    token: response.data.token,
+                    username: response.data.username,
+                };
+                setUser(user);
                 setSubmissionStatus("SUCCESS");
-                setTimeout( () => {navigate("/")}, 3000)
+                setTimeout( () => {navigate("/")}, 3000);
             }
         )
         .catch(
@@ -65,10 +74,11 @@ const LoginPage = () => {
     const [password, setPassword] = React.useState('');
     const [submissionStatus, setSubmissionStatus] = React.useState('PENDING');
     const {jwt, setJwt} = React.useContext(JwtContext);
+    const {user, setUser} = React.useContext(UserContext);
     const navigate = useNavigate();
 
     return (<>
-        <form onSubmit={e => handleSubmit(e, username, password, setSubmissionStatus, setJwt, navigate)}>
+        <form onSubmit={e => handleSubmit(e, username, password, setSubmissionStatus, setJwt, navigate, setUser)}>
             <label htmlFor='usernameInput'>Username:</label>
             <input type='text' value={username} onChange={e => setUsername(e.target.value)} /><br/>
             <label htmlFor='passwordInput'>Password:</label>

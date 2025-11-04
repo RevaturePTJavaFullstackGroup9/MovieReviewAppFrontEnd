@@ -12,7 +12,8 @@ const ReviewPage = () => {
     const [page, setPage] = React.useState(1);
     const [movie, setMovie] = React.useState(null);
     const [averageScore, setAverageScore] = React.useState(0.0);
-    const [users, setUsers] = React.useState([]);
+    //const [users, setUsers] = React.useState([]);
+    
 
     React.useEffect(() => {
         fetch(`http://localhost:8080/movies/${movieId}/reviews`)
