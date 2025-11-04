@@ -1,9 +1,27 @@
 // src/components/AuthBox.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import UserContext from "./components/Context/UserContext";
+
+const AdminButtonDisplay = (user, navigate) => {
+  if (user?.role?.includes("ADMIN")){
+    return (<>
+      <button
+        onClick={() => navigate("/admin")}
+        style={{ ...buttonStyle, background: "#111827", color: "#fff" }}
+        aria-label="Admin"
+      >
+      Admin
+      </button>
+    </>)
+  }
+
+  return (<></>)
+};
 
 export default function AuthBox({ className = "", style = {} }) {
   const navigate = useNavigate();
+  const {user} = React.useContext(UserContext);
 
   return (
     <div
@@ -37,20 +55,15 @@ export default function AuthBox({ className = "", style = {} }) {
         </button>
 
         <button
-          onClick={() => navigate("/register")}
+          onClick={() => navigate("/signup")}
           style={{ ...buttonStyle, background: "white", color: "#0b5cff", border: "1px solid #d6e0ff" }}
           aria-label="Register"
         >
           Register
         </button>
 
-        <button
-          onClick={() => navigate("/admin")}
-          style={{ ...buttonStyle, background: "#111827", color: "#fff" }}
-          aria-label="Admin"
-        >
-          Admin
-        </button>
+        {AdminButtonDisplay(user, navigate)}
+        
       </div>
 
       
