@@ -27,7 +27,8 @@ const toPayload = (form) => {
     leadActor2: form.leadActor2 || null, // leadActor2 or null
     releaseDate: form.releaseDate || null, // releaseDate string "YYYY-MM-DD" or null
     salesMillions: form.salesMillions === "" ? null : Number(form.salesMillions), // convert sales to Number or null
-    posterUrl: form.posterUrl || null // NEW
+    posterUrl: form.posterUrl || null, // NEW
+    synopsis: form.synopsis || null
   };
 
   if (!SEND_SNAKE_CASE) return payload; // return camelCase payload unless snake_case requested
@@ -41,7 +42,8 @@ const toPayload = (form) => {
     lead_actor_2: payload.leadActor2,
     release_date: payload.releaseDate,
     sales_millions: payload.salesMillions,
-    poster_url: payload.posterUrl
+    poster_url: payload.posterUrl,
+    synopsis: payload.synopsis
   };
 };
 
@@ -54,7 +56,8 @@ const emptyForm = {
   leadActor2: "", // empty lead actor 2
   releaseDate: "", // empty release date
   salesMillions: "", // empty sales field
-  posterUrl: ""
+  posterUrl: "",
+  synopsis: ""
 };
 
 export default function AdminMovies() {
@@ -194,7 +197,15 @@ export default function AdminMovies() {
             onChange={onChange}
           />
         </div>
-
+        {/* Fourth Row: Synopsis */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
+          <input
+            name="synopsis"
+            placeholder="Movie Synopsis"
+            value={form.synopsis}
+            onChange={onChange}
+          />
+        </div>
         {/* Controls: sales, add, clear, delete all */}
         <div style={{ display: "flex", gap: 8 }}>
           <input type="number" step="0.01" name="salesMillions" placeholder="Sales (millions)" value={form.salesMillions} onChange={onChange} /> {/* numeric sales input */}
@@ -232,23 +243,21 @@ export default function AdminMovies() {
           <tbody>
             {movies.map((m) => (
               <tr key={m.id}>
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.id}</td> {/* movie id cell */}
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.title}</td> {/* title */}
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.director ?? ""}</td> {/* director or empty */}
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.genre ?? ""}</td> {/* genre or empty */}
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.leadActor1 ?? ""}</td> {/* lead actor 1 */}
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.leadActor2 ?? ""}</td> {/* lead actor 2 */}
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.releaseDate ?? ""}</td> {/* release date */}
-                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.salesMillions ?? ""}</td> {/* sales millions */}
-
-                  <td>
-                  {m.posterUrl ? (
-                    <a href={m.posterUrl} target="_blank" rel="noopener noreferrer">View Poster</a>
-                  ) : (
-                    "—"
-                  )}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.id}</td>{/* movie id cell */}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.title}</td>{/* title */}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.director ?? ""}</td>{/* director or empty */}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.genre ?? ""}</td>{/* genre or empty */}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.leadActor1 ?? ""}</td>{/* lead actor 1 */}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.leadActor2 ?? ""}</td>{/* lead actor 2 */}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.releaseDate ?? ""}</td>{/* release date */}
+                <td style={{ border: "1px solid #eee", padding: 8 }}>{m.salesMillions ?? ""}</td>{/* sales millions */}
+                <td>
+                {m.posterUrl ? (
+                  <a href={m.posterUrl} target="_blank" rel="noopener noreferrer">View Poster</a>
+                ) : (
+                  "—"
+                )}
                 </td>
-
                 {/* Actions: delete single movie */}
                 <td style={{ border: "1px solid #eee", padding: 8, whiteSpace: "nowrap" }}>
                   <button onClick={() => deleteOne(m.id)} disabled={loading}>Delete</button> {/* delete button calls deleteOne */}
@@ -259,7 +268,7 @@ export default function AdminMovies() {
             {/* If there are no movies, show a friendly message row */}
             {movies.length === 0 && (
               <tr>
-                <td colSpan="9" style={{ padding: 12, textAlign: "center" }}>No movies found</td> {/* fallback row when list empty */}
+                <td colSpan="9" style={{ padding: 12, textAlign: "center" }}>No movies found</td>{/* fallback row when list empty */}
               </tr>
             )}
           </tbody>
