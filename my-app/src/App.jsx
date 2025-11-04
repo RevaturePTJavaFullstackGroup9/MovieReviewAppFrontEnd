@@ -4,6 +4,7 @@ import Home from "./Home";
 import AdminMovies from "./AdminMovies";
 import MovieDetails from "./MovieDetails";
 import ReviewPage from "./components/ReviewPage/ReviewPage";
+import Register from "./Register";
 import Login from "./Login";
 import LoginPage from "./components/LoginPage/LoginPage";
 import SignupPage from "./components/LoginPage/SignupPage";
@@ -56,11 +57,15 @@ export default function App() {
         <nav style={{padding:12, borderBottom:"1px solid #eee"}}>
           <Link to="/" style={{marginRight:12}}>Home</Link>
 
+           <Link to="/register">Register</Link>
+
+
           <Link to="/login" style={{ marginRight: 12 }}>Login</Link>
 
           {user?.role?.includes('ADMIN') ? <Link to="/admin" style={{marginRight:12}}>Admin</Link> : <></>}
           {user ? <Link to="/logout">Logout</Link> : <></> }
           <h5>{user ? `Welcome, ${user.username}` : "Not Logged In"}</h5>
+
         </nav>
 
           
@@ -83,6 +88,8 @@ export default function App() {
           <Route path="/logout" element={<LogoutPage/>}/>
 
 
+
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
