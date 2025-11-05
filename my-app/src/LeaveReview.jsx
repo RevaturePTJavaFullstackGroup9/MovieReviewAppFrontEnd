@@ -24,7 +24,7 @@ const resetField = (existingUserReview, setTitle, setText, setStars) =>{
  * on success. An optional onPosted callback allows parent components to refresh
  * UI or update local state after a successful post.
  */
-export default function LeaveReview({ movieId, setReviewPosted, existingUserReview /*, onPosted, authToken*/ }) {
+export default function LeaveReview({ movieId, setReviewPosted, existingUserReview, editsMade, setEditsMade /*, onPosted, authToken*/ }) {
     // Form field state
     const [title, setTitle] = useState(existingUserReview?.reviewTitle ?? "");       // review title
     const [stars, setStars] = useState(existingUserReview?.reviewScore ?? 8);        // star rating (1-10), default 8
@@ -35,7 +35,6 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
     // UI state
     const [loading, setLoading] = useState(false); // true while POST in progress
     const [error, setError] = useState("");        // error message shown to user
-
     // If no movieId was provided, render nothing (parent should supply movieId)
     if (!movieId) return null;
 
@@ -75,7 +74,7 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
             */
             
             const reviewDTO = {
-                reviewId: null,
+                reviewId: existingUserReview?.reviewId ?? null,
                 userId: user.id,
                 movieId: movieId,
                 reviewText: text,
@@ -89,8 +88,17 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
                     'Authorization': `Bearer ${user.token}`
                 }
             };
-
-            const res = await axios.post(`/api/reviews`, reviewDTO, config);
+            let res;
+            if (existingUserReview == null){
+                res = await axios.post(`/api/reviews`, reviewDTO, config);
+            }
+            else{
+                res = await axios.patch(`/api/reviews/${existingUserReview.reviewId}`, reviewDTO, config);
+                setTitle(reviewDTO.reviewTitle);
+                setText(reviewDTO.reviewText);
+                setStars(reviewDTO.reviewScore);
+                setEditsMade(editsMade + 1);
+            } 
             // If server responds with non-2xx, try to extract body for better debugging
             /*
             if (!res.ok) {
@@ -102,10 +110,11 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
             const created = await res.json();
             */
             // Clear the form after successful post
-            setTitle("");
-            setText("");
-            setStars(8);
-           
+            //setTitle("");
+            //setText("");
+            //setStars(8);
+            // Reset the field after successful post / edit
+            
 
             // Notify parent if callback provided
             //if (typeof onPosted === "function") onPosted(created);

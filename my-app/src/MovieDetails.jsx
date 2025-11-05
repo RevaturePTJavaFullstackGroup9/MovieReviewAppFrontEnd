@@ -59,6 +59,7 @@ export default function MovieDetails() {
 
     const {user} = React.useContext(UserContext);
     const [existingUserReview, setExistingUserReview] = React.useState(null);
+    const [editsMade, setEditsMade] = React.useState(0);
     useEffect(()=>{
         if (!user){
             return;
@@ -86,7 +87,7 @@ export default function MovieDetails() {
                 }
             })
             
-    }, [user, reviewPosted])
+    }, [user, reviewPosted, editsMade])
 
     // show loading state
     if (loading) return <div style={{ padding: 20 }}>Loading movie…</div>;
@@ -186,8 +187,8 @@ export default function MovieDetails() {
 
                     
                     {/* MOVIEW REVIEWS IMPLEMENTATION*/}
-                    <Reviews movieId={id} reviewPosted={reviewPosted}/>
-                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted} existingUserReview={existingUserReview}/>
+                    <Reviews movieId={id} reviewPosted={reviewPosted} editsMade={editsMade}/>
+                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted} existingUserReview={existingUserReview} editsMade={editsMade} setEditsMade={setEditsMade}/>
                 </div>
             </div>
         </div>

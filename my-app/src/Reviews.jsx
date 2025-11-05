@@ -53,7 +53,7 @@ const refreshUserIdToUserName2 = (reviews, setUserIdToUserName) => {
  * optionally polls for updates, and renders a simple list of reviews with a
  * small star display component.
  */
-export default function Reviews({ movieId, pollInterval = 0 , reviewPosted}) {
+export default function Reviews({ movieId, pollInterval = 0 , reviewPosted, editsMade}) {
     // reviews array from the server
     const [reviews, setReviews] = useState([]);
     // loading indicator while fetching
@@ -62,7 +62,6 @@ export default function Reviews({ movieId, pollInterval = 0 , reviewPosted}) {
     const [error, setError] = useState("");
 
     const [userIdToUserName, setUserIdToUserName] = useState(new Map());
-
 
     useEffect(() => {
         // if no movieId provided, don't attempt to load
@@ -108,7 +107,7 @@ export default function Reviews({ movieId, pollInterval = 0 , reviewPosted}) {
             if (timer) clearInterval(timer);
         };
         // re-run effect when movieId or pollInterval change
-    }, [movieId, pollInterval, reviewPosted]);
+    }, [movieId, pollInterval, reviewPosted, editsMade]);
 
     useEffect(() => refreshUserIdToUserName2(reviews, setUserIdToUserName), [reviews]);
 
