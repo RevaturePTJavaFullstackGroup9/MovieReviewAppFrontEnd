@@ -1,5 +1,7 @@
 // src/components/LeaveReview.jsx
 import React, { useState } from "react";
+import UserContext from "./components/Context/UserContext";
+import axios from "axios";
 
 /**
  * LeaveReview
@@ -14,12 +16,13 @@ import React, { useState } from "react";
  * on success. An optional onPosted callback allows parent components to refresh
  * UI or update local state after a successful post.
  */
-export default function LeaveReview({ movieId, onPosted, authToken }) {
+export default function LeaveReview({ movieId /*, onPosted, authToken*/ }) {
     // Form field state
     const [title, setTitle] = useState("");       // review title
     const [stars, setStars] = useState(8);        // star rating (1-10), default 8
     const [text, setText] = useState("");         // review body / text
-    const [username, setUsername] = useState(""); // optional display name for non-auth users
+    //const [username, setUsername] = useState(""); // optional display name for non-auth users
+    const {user} = React.useContext(UserContext);
 
     // UI state
     const [loading, setLoading] = useState(false); // true while POST in progress
@@ -37,7 +40,7 @@ export default function LeaveReview({ movieId, onPosted, authToken }) {
         if (!title.trim()) return setError("Title is required");
         if (!text.trim()) return setError("Review text is required");
         if (!Number.isFinite(Number(stars)) || stars < 1 || stars > 10)
-            return setError("Stars must be between 1 and 10");
+            return setError("Stars must be between 1 and 10"); 
 
         // Build payload for request
         const payload = {
@@ -46,22 +49,42 @@ export default function LeaveReview({ movieId, onPosted, authToken }) {
             text: text.trim()
         };
         // Include optional username if provided
-        if (username.trim()) payload.username = username.trim();
+        //if (username.trim()) payload.username = username.trim();
 
         setLoading(true);
         try {
             // Build headers and include auth token when provided
-            const headers = { "Content-Type": "application/json" };
-            if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
+            //const headers = { "Content-Type": "application/json" };
+            //if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
 
             // POST to backend endpoint for reviews of this movie
+            /*
             const res = await fetch(`/api/movies/${movieId}/reviews`, {
                 method: "POST",
                 headers,
                 body: JSON.stringify(payload)
             });
+            */
+            
+            const reviewDTO = {
+                reviewId: null,
+                userId: user.id,
+                movieId: movieId,
+                reviewText: text,
+                isHidden: false,
+                reviewTitle: title,
+                reviewScore: stars,
+            }
 
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            };
+
+            const res = await axios.post(`/api/reviews`, reviewDTO, config);
             // If server responds with non-2xx, try to extract body for better debugging
+            /*
             if (!res.ok) {
                 const body = await res.text();
                 throw new Error(`Post failed ${res.status}: ${body}`);
@@ -69,15 +92,16 @@ export default function LeaveReview({ movieId, onPosted, authToken }) {
 
             // Assume backend returns the created review object
             const created = await res.json();
-
+            */
             // Clear the form after successful post
             setTitle("");
             setText("");
             setStars(8);
-            setUsername("");
+            //setUsername("");
 
             // Notify parent if callback provided
-            if (typeof onPosted === "function") onPosted(created);
+            //if (typeof onPosted === "function") onPosted(created);
+
         } catch (err) {
             // Log and show a friendly message
             console.error(err);
@@ -143,6 +167,7 @@ export default function LeaveReview({ movieId, onPosted, authToken }) {
             </label>
 
             {/* Optional username input for flows without authentication */}
+            {/* 
             <label style={{ display: "block", marginBottom: 8 }}>
                 <div style={{ fontSize: 13 }}>Name (optional)</div>
                 <input
@@ -152,6 +177,7 @@ export default function LeaveReview({ movieId, onPosted, authToken }) {
                     style={inputStyle}
                 />
             </label>
+            */}
 
             {/* Show error message if present */}
             {error && <div style={{ color: "crimson", marginBottom: 8 }}>{error}</div>}

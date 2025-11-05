@@ -85,22 +85,22 @@ export default function Reviews({ movieId, pollInterval = 0 }) {
             {/* list of reviews */}
             <ul style={{ listStyle: "none", padding: 0, marginTop: 12 }}>
                 {reviews.map((r) => (
-                    <li key={r.id} style={{ borderBottom: "1px solid #eee", padding: "12px 0" }}>
+                    <li key={r.reviewId} style={{ borderBottom: "1px solid #eee", padding: "12px 0" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                             {/* review title (fall back to "Untitled") */}
-                            <div style={{ fontWeight: 700 }}>{r.title || "Untitled"}</div>
+                            <div style={{ fontWeight: 700 }}>{r.reviewTitle || "Untitled"}</div>
                             {/* formatted creation date */}
                             <div style={{ color: "#666", fontSize: 13 }}>{formatDate(r.createdAt)}</div>
                         </div>
 
                         <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6 }}>
                             {/* star visualization and reviewer name */}
-                            <StarDisplay stars={r.stars} />
-                            <span style={{ color: "#333", fontWeight: 600 }}>{r.username || "Anonymous"}</span>
+                            <StarDisplay stars={r.reviewScore} />
+                            <span style={{ color: "#333", fontWeight: 600 }}>{r.userId || "Anonymous"}</span>
                         </div>
 
                         {/* review text (preserve line breaks) */}
-                        <p style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>{r.text}</p>
+                        <p style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>{r.reviewText}</p>
                     </li>
                 ))}
             </ul>
