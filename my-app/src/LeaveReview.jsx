@@ -3,6 +3,14 @@ import React, { useState } from "react";
 import UserContext from "./components/Context/UserContext";
 import axios from "axios";
 
+const resetField = (existingUserReview, setTitle, setText, setStars) =>{
+    // reset fields when 'Clear' clicked
+    setTitle(existingUserReview?.reviewTitle ?? "");
+    setText(existingUserReview?.reviewText ?? "");
+    setStars(existingUserReview?.reviewScore ?? 8);
+}
+
+
 /**
  * LeaveReview
  *
@@ -16,11 +24,11 @@ import axios from "axios";
  * on success. An optional onPosted callback allows parent components to refresh
  * UI or update local state after a successful post.
  */
-export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, authToken*/ }) {
+export default function LeaveReview({ movieId, setReviewPosted, existingUserReview /*, onPosted, authToken*/ }) {
     // Form field state
-    const [title, setTitle] = useState("");       // review title
-    const [stars, setStars] = useState(8);        // star rating (1-10), default 8
-    const [text, setText] = useState("");         // review body / text
+    const [title, setTitle] = useState(existingUserReview?.reviewTitle ?? "");       // review title
+    const [stars, setStars] = useState(existingUserReview?.reviewScore ?? 8);        // star rating (1-10), default 8
+    const [text, setText] = useState(existingUserReview?.reviewText ?? "");         // review body / text
     //const [username, setUsername] = useState(""); // optional display name for non-auth users
     const {user} = React.useContext(UserContext);
 
@@ -97,7 +105,7 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
             setTitle("");
             setText("");
             setStars(8);
-            //setUsername("");
+           
 
             // Notify parent if callback provided
             //if (typeof onPosted === "function") onPosted(created);
@@ -184,7 +192,7 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
             {/* Show error message if present */}
             {error && <div style={{ color: "crimson", marginBottom: 8 }}>{error}</div>}
 
-            {/* Actions: submit and clear */}
+            {/* Actions: submit and Reset */}
             <div style={{ display: "flex", gap: 8 }}>
                 <button type="submit" disabled={loading} style={buttonStyle}>
                     {loading ? "Posting…" : "Post review"}
@@ -192,16 +200,11 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
                 <button
                     type="button"
                     disabled={loading}
-                    onClick={() => {
-                        // reset fields when 'Clear' clicked
-                        setTitle("");
-                        setText("");
-                        setStars(8);
-                        setUsername("");
-                    }}
+                    onClick={() => resetField(existingUserReview, setTitle, setText, setStars)
+                    }
                     style={{ ...buttonStyle, background: "#f3f3f3", color: "#222" }}
                 >
-                    Clear
+                    Reset
                 </button>
             </div>
         </form>

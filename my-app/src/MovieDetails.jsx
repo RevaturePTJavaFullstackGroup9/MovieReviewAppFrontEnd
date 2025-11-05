@@ -5,10 +5,13 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 //React component imports
 import Reviews from "./Reviews";
 import LeaveReview from "./LeaveReview";
+
+import UserContext from "./components/Context/UserContext";
 
 const PLACEHOLDER = "/poster-placeholder.png"; // fallback image when poster is missing or fails to load
 
@@ -53,6 +56,37 @@ export default function MovieDetails() {
             mounted = false;
         };
     }, [id]);
+
+    const {user} = React.useContext(UserContext);
+    const [existingUserReview, setExistingUserReview] = React.useState(null);
+    useEffect(()=>{
+        if (!user){
+            return;
+        }
+        axios.get(`http://localhost:8080/api/movies/${id}/reviews/search`, {
+                params: {userId: user.id},
+                validateStatus: (status) => {return ((status >= 200 && status < 300) || status==404)},
+            })
+            .then(response => {
+                if (response.data != null){
+                    setExistingUserReview(response.data)
+                    console.log(`Found existing review for user with id ${user.id}! existingUserReview=${JSON.stringify(response.data)}`);
+                }
+                else{
+                    console.log(`No existing review for user with id ${user.id}`);
+                }
+                
+            })
+            .catch(err => {
+                if (err.response?.status === 404){
+                    console.log(`A review was not already posted for user ${user.userId} for movie ${id}`);
+                }
+                else{
+                    console.error(`An error happened trying to get the existing review for user ${user.userId} for movie ${id}, err=${err}`);
+                }
+            })
+            
+    }, [user, reviewPosted])
 
     // show loading state
     if (loading) return <div style={{ padding: 20 }}>Loading movie…</div>;
@@ -153,7 +187,7 @@ export default function MovieDetails() {
                     
                     {/* MOVIEW REVIEWS IMPLEMENTATION*/}
                     <Reviews movieId={id} reviewPosted={reviewPosted}/>
-                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted}/>
+                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted} existingUserReview={existingUserReview}/>
                 </div>
             </div>
         </div>
