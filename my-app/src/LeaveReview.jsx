@@ -142,7 +142,7 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
             }}
             disabled={user === null}
         >
-            <h3 style={{ marginTop: 0 }}>Leave a review</h3>
+            <h3 style={{ marginTop: 0 }}>{existingUserReview ? <>Edit your review</> : <>Leave a review</>}</h3>
 
             {/* Title input */}
             <label style={{ display: "block", marginBottom: 8 }}>
@@ -208,7 +208,7 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
             {/* Actions: submit and Reset */}
             <div style={{ display: "flex", gap: 8 }}>
                 <button type="submit" disabled={loading || user === null} style={buttonStyle}>
-                    {loading ? "Posting…" : "Post review"}
+                    {loading ? "Posting…" : (existingUserReview ? "Edit review" : "Post Review")}
                 </button>
                 <button
                     type="button"

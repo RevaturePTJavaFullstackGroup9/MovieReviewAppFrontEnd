@@ -70,8 +70,20 @@ export default function MovieDetails() {
             })
             .then(response => {
                 if (response.data != null){
-                    setExistingUserReview(response.data)
-                    console.log(`Found existing review for user with id ${user.id}! existingUserReview=${JSON.stringify(response.data)}`);
+                    try {
+                        let userResponse = response.data;
+                        if (userResponse.reviewId){
+                            setExistingUserReview(userResponse)
+                            console.log(`Found existing review for user with id ${user.id}! existingUserReview=${JSON.stringify(userResponse)}`);
+                        }
+                        else{
+                            console.log(`The server response didn't cause the promise to fail, but it wasn't a valid object. Server Response = ${JSON.stringify(userResponse)}`)
+                        }
+                    } 
+                    catch (err) {
+                        console.error(`An error happened trying to parse the response. err=${err}`)
+                    }
+                    
                 }
                 else{
                     console.log(`No existing review for user with id ${user.id}`);
