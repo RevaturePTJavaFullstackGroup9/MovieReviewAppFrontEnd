@@ -1,5 +1,46 @@
 // src/components/Reviews.jsx
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const refreshUserIdToUserName = (reviews, setUserIdToUserName) => {(async (reviews, setUserIdToUserName) => {
+    const userIdToUserName = await reviews.reduce(
+        async (mapPromise, review)=>{
+            const map = await mapPromise.then(map => map);
+            try{
+                const response = await axios.get(`http://localhost:8080/users/${review.userId}`);
+                map.set(review.userId, response.data.username);
+            }
+            catch (e){
+                console.error(`Error getting username from id ${review.userId}, error="${e}"`)
+            }
+            return Promise.resolve(map);
+        }, Promise.resolve(new Map())
+    );
+    setUserIdToUserName(userIdToUserName);
+}  
+)(reviews, setUserIdToUserName);};
+
+const refreshUserIdToUserName2 = (reviews, setUserIdToUserName) => {
+    (
+        async () => {
+            const userIdToUserName = await reviews.reduce(
+                async (mapPromise, review)=> {
+                    const map = await mapPromise.then(map => map);
+                    try{
+                        const response = await axios.get(`http://localhost:8080/users/${review.userId}`);
+                        map.set(review.userId, response.data.username);
+                    }
+                    catch (e){
+                        console.error(`Error getting username from id ${review.userId}, error="${e}"`)
+                    }
+                    return Promise.resolve(map);
+                }, Promise.resolve(new Map())
+            );
+            setUserIdToUserName(userIdToUserName);
+        } 
+    )(); // IIFE 
+};
+
 
 /**
  * Reviews component
@@ -19,6 +60,9 @@ export default function Reviews({ movieId, pollInterval = 0 , reviewPosted}) {
     const [loading, setLoading] = useState(true);
     // error message to display on fetch failure
     const [error, setError] = useState("");
+
+    const [userIdToUserName, setUserIdToUserName] = useState(new Map());
+
 
     useEffect(() => {
         // if no movieId provided, don't attempt to load
@@ -66,6 +110,8 @@ export default function Reviews({ movieId, pollInterval = 0 , reviewPosted}) {
         // re-run effect when movieId or pollInterval change
     }, [movieId, pollInterval, reviewPosted]);
 
+    useEffect(() => refreshUserIdToUserName2(reviews, setUserIdToUserName), [reviews]);
+
     // don't render anything if no movieId provided
     if (!movieId) return null;
 
@@ -96,7 +142,7 @@ export default function Reviews({ movieId, pollInterval = 0 , reviewPosted}) {
                         <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6 }}>
                             {/* star visualization and reviewer name */}
                             <StarDisplay stars={r.reviewScore} />
-                            <span style={{ color: "#333", fontWeight: 600 }}>{r.userId || "Anonymous"}</span>
+                            <span style={{ color: "#333", fontWeight: 600 }}>{userIdToUserName.get(r.userId) ?? "Loading..."}</span>
                         </div>
 
                         {/* review text (preserve line breaks) */}
