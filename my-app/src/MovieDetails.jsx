@@ -21,6 +21,7 @@ export default function MovieDetails() {
     const [movie, setMovie] = useState(null); // fetched movie object
     const [loading, setLoading] = useState(true); // loading indicator
     const [error, setError] = useState(""); // error message, if any
+    const [reviewPosted, setReviewPosted] = useState(false);
 
     // fetch movie data when the id changes
     useEffect(() => {
@@ -151,8 +152,8 @@ export default function MovieDetails() {
 
                     
                     {/* MOVIEW REVIEWS IMPLEMENTATION*/}
-                    <Reviews movieId={id} />
-                    <LeaveReview movieId={id} />
+                    <Reviews movieId={id} reviewPosted={reviewPosted}/>
+                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted}/>
                 </div>
             </div>
         </div>

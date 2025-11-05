@@ -16,7 +16,7 @@ import axios from "axios";
  * on success. An optional onPosted callback allows parent components to refresh
  * UI or update local state after a successful post.
  */
-export default function LeaveReview({ movieId /*, onPosted, authToken*/ }) {
+export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, authToken*/ }) {
     // Form field state
     const [title, setTitle] = useState("");       // review title
     const [stars, setStars] = useState(8);        // star rating (1-10), default 8
@@ -101,6 +101,8 @@ export default function LeaveReview({ movieId /*, onPosted, authToken*/ }) {
 
             // Notify parent if callback provided
             //if (typeof onPosted === "function") onPosted(created);
+
+            setReviewPosted(true);
 
         } catch (err) {
             // Log and show a friendly message

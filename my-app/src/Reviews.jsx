@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
  * optionally polls for updates, and renders a simple list of reviews with a
  * small star display component.
  */
-export default function Reviews({ movieId, pollInterval = 0 }) {
+export default function Reviews({ movieId, pollInterval = 0 , reviewPosted}) {
     // reviews array from the server
     const [reviews, setReviews] = useState([]);
     // loading indicator while fetching
@@ -64,7 +64,7 @@ export default function Reviews({ movieId, pollInterval = 0 }) {
             if (timer) clearInterval(timer);
         };
         // re-run effect when movieId or pollInterval change
-    }, [movieId, pollInterval]);
+    }, [movieId, pollInterval, reviewPosted]);
 
     // don't render anything if no movieId provided
     if (!movieId) return null;
