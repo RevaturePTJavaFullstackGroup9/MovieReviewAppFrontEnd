@@ -140,6 +140,7 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
                 padding: 12,
                 borderRadius: 8
             }}
+            disabled={user === null}
         >
             <h3 style={{ marginTop: 0 }}>Leave a review</h3>
 
@@ -152,6 +153,7 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
                     onChange={(e) => setTitle(e.target.value)}
                     style={inputStyle}
                     maxLength={120}
+                    disabled={user === null}
                 />
             </label>
 
@@ -166,6 +168,7 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
                         max="10"
                         value={stars}
                         onChange={(e) => setStars(Number(e.target.value))}
+                        disabled={user === null}
                     />
                     {/* display current numeric rating */}
                     <div style={{ minWidth: 36, textAlign: "center", fontWeight: 700 }}>
@@ -182,6 +185,7 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     style={{ ...inputStyle, minHeight: 90 }}
+                    disabled={user === null}
                 />
             </label>
 
@@ -203,12 +207,12 @@ export default function LeaveReview({ movieId, setReviewPosted, existingUserRevi
 
             {/* Actions: submit and Reset */}
             <div style={{ display: "flex", gap: 8 }}>
-                <button type="submit" disabled={loading} style={buttonStyle}>
+                <button type="submit" disabled={loading || user === null} style={buttonStyle}>
                     {loading ? "Posting…" : "Post review"}
                 </button>
                 <button
                     type="button"
-                    disabled={loading}
+                    disabled={loading || user === null}
                     onClick={() => resetField(existingUserReview, setTitle, setText, setStars)
                     }
                     style={{ ...buttonStyle, background: "#f3f3f3", color: "#222" }}
