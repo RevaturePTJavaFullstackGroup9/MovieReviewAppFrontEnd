@@ -14,7 +14,7 @@ export default function ReviewsTable({ baseUrl = '' }) {
 
     (async () => {
       try {
-        const res = await fetch(`${baseUrl}/reviews`);
+        const res = await fetch(`${baseUrl}/api/reviews`);
         if (!res.ok) {
           const txt = await res.text();
           throw new Error(txt || `HTTP ${res.status}`);
@@ -63,7 +63,7 @@ export default function ReviewsTable({ baseUrl = '' }) {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comment</th>
-              <th className="px-6 py-3"></th>
+              <th className="px-6 py-3">Delete?</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -73,12 +73,12 @@ export default function ReviewsTable({ baseUrl = '' }) {
               </tr>
             ) : (
               reviews.map((review) => (
-                <tr key={review.id}>
-                  <td className="px-6 py-4 text-sm text-gray-700">{review.id}</td>
+                <tr key={review.reviewId}>
+                  <td className="px-6 py-4 text-sm text-gray-700">{review.reviewId}</td>
                   <td className="px-6 py-4 text-sm text-gray-700">{review.movieId}</td>
                   <td className="px-6 py-4 text-sm text-gray-700">{review.userId}</td>
-                  <td className="px-6 py-4 text-sm text-gray-700">{review.score}</td>
-                  <td className="px-6 py-4 text-sm text-gray-700">{review.comment || '-'}</td>
+                  <td className="px-6 py-4 text-sm text-gray-700">{review.reviewScore}</td>
+                  <td className="px-6 py-4 text-sm text-gray-700">{review.reviewText || '-'}</td>
                   <td className="px-6 py-4 text-right text-sm font-medium">
                     <button
                       onClick={() => handleDelete(review.id)}

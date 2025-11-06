@@ -124,7 +124,8 @@ export default function UsersTable({ baseUrl = '' }) {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                            <th className="px-6 py-3"></th>
+                            <th className="px-6 py-3">Role</th>
+                            <th className="px-6 py-3">Delete?</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -140,7 +141,7 @@ export default function UsersTable({ baseUrl = '' }) {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.id}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.username || user.userName || '-'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.email || '-'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{Array.isArray(user.roles) ? user.roles.join(', ') : user.roles || '-'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.role || '-'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         {/* Delete button: disabled while a delete is in progress for this id */}
                                         <button

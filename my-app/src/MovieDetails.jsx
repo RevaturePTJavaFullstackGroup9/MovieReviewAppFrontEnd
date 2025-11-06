@@ -12,8 +12,6 @@ import Reviews from "./Reviews";
 import LeaveReview from "./LeaveReview";
 import UserContext from "./components/Context/UserContext";
 
-import UserContext from "./components/Context/UserContext";
-
 const PLACEHOLDER = "/poster-placeholder.png"; // fallback image when poster is missing or fails to load
 
 export default function MovieDetails() {
@@ -62,7 +60,6 @@ export default function MovieDetails() {
         };
     }, [id]);
 
-    const {user} = React.useContext(UserContext);
     const [existingUserReview, setExistingUserReview] = React.useState(null);
     const [editsMade, setEditsMade] = React.useState(0);
     useEffect(()=>{
@@ -204,10 +201,9 @@ export default function MovieDetails() {
 
                     
                     {/* MOVIEW REVIEWS IMPLEMENTATION*/}
-<<<<<<< HEAD
-                    <Reviews movieId={id} reviewPosted={reviewPosted}/>                    
+                    <Reviews movieId={id} reviewPosted={reviewPosted} editsMade={editsMade}/>                 
                      {isLoggedIn ? (
-                            <LeaveReview movieId={movie.id} />
+                            <LeaveReview movieId={id} setReviewPosted={setReviewPosted} existingUserReview={existingUserReview} editsMade={editsMade} setEditsMade={setEditsMade}/>
                         ) : (
                             <div
                             style={{
@@ -223,19 +219,7 @@ export default function MovieDetails() {
                             >
                             You must register or log in to leave a review. Click here to sign up!
                             </div>
-                        )}
-
-
-
-
-
-
-
-
-=======
-                    <Reviews movieId={id} reviewPosted={reviewPosted} editsMade={editsMade}/>
-                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted} existingUserReview={existingUserReview} editsMade={editsMade} setEditsMade={setEditsMade}/>
->>>>>>> d5d6c0ea3c9d0abc4636c7d3496b0b5abf27f11d
+                        )}              
                 </div>
             </div>
         </div>
