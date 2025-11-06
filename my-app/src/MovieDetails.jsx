@@ -5,10 +5,13 @@
 
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 //React component imports
 import Reviews from "./Reviews";
 import LeaveReview from "./LeaveReview";
+import UserContext from "./components/Context/UserContext";
+
 import UserContext from "./components/Context/UserContext";
 
 const PLACEHOLDER = "/poster-placeholder.png"; // fallback image when poster is missing or fails to load
@@ -58,6 +61,50 @@ export default function MovieDetails() {
             mounted = false;
         };
     }, [id]);
+
+    const {user} = React.useContext(UserContext);
+    const [existingUserReview, setExistingUserReview] = React.useState(null);
+    const [editsMade, setEditsMade] = React.useState(0);
+    useEffect(()=>{
+        if (!user){
+            return;
+        }
+        axios.get(`http://localhost:8080/api/movies/${id}/reviews/search`, {
+                params: {userId: user.id},
+                validateStatus: (status) => {return ((status >= 200 && status < 300) || status==404)},
+            })
+            .then(response => {
+                if (response.data != null){
+                    try {
+                        let userResponse = response.data;
+                        if (userResponse.reviewId){
+                            setExistingUserReview(userResponse)
+                            console.log(`Found existing review for user with id ${user.id}! existingUserReview=${JSON.stringify(userResponse)}`);
+                        }
+                        else{
+                            console.log(`The server response didn't cause the promise to fail, but it wasn't a valid object. Server Response = ${JSON.stringify(userResponse)}`)
+                        }
+                    } 
+                    catch (err) {
+                        console.error(`An error happened trying to parse the response. err=${err}`)
+                    }
+                    
+                }
+                else{
+                    console.log(`No existing review for user with id ${user.id}`);
+                }
+                
+            })
+            .catch(err => {
+                if (err.response?.status === 404){
+                    console.log(`A review was not already posted for user ${user.userId} for movie ${id}`);
+                }
+                else{
+                    console.error(`An error happened trying to get the existing review for user ${user.userId} for movie ${id}, err=${err}`);
+                }
+            })
+            
+    }, [user, reviewPosted, editsMade])
 
     // show loading state
     if (loading) return <div style={{ padding: 20 }}>Loading movie…</div>;
@@ -157,6 +204,7 @@ export default function MovieDetails() {
 
                     
                     {/* MOVIEW REVIEWS IMPLEMENTATION*/}
+<<<<<<< HEAD
                     <Reviews movieId={id} reviewPosted={reviewPosted}/>                    
                      {isLoggedIn ? (
                             <LeaveReview movieId={movie.id} />
@@ -184,6 +232,10 @@ export default function MovieDetails() {
 
 
 
+=======
+                    <Reviews movieId={id} reviewPosted={reviewPosted} editsMade={editsMade}/>
+                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted} existingUserReview={existingUserReview} editsMade={editsMade} setEditsMade={setEditsMade}/>
+>>>>>>> d5d6c0ea3c9d0abc4636c7d3496b0b5abf27f11d
                 </div>
             </div>
         </div>

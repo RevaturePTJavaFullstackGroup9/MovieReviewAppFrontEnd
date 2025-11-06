@@ -3,6 +3,14 @@ import React, { useState } from "react";
 import UserContext from "./components/Context/UserContext";
 import axios from "axios";
 
+const resetField = (existingUserReview, setTitle, setText, setStars) =>{
+    // reset fields when 'Clear' clicked
+    setTitle(existingUserReview?.reviewTitle ?? "");
+    setText(existingUserReview?.reviewText ?? "");
+    setStars(existingUserReview?.reviewScore ?? 8);
+}
+
+
 /**
  * LeaveReview
  *
@@ -16,18 +24,17 @@ import axios from "axios";
  * on success. An optional onPosted callback allows parent components to refresh
  * UI or update local state after a successful post.
  */
-export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, authToken*/ }) {
+export default function LeaveReview({ movieId, setReviewPosted, existingUserReview, editsMade, setEditsMade /*, onPosted, authToken*/ }) {
     // Form field state
-    const [title, setTitle] = useState("");       // review title
-    const [stars, setStars] = useState(8);        // star rating (1-10), default 8
-    const [text, setText] = useState("");         // review body / text
+    const [title, setTitle] = useState(existingUserReview?.reviewTitle ?? "");       // review title
+    const [stars, setStars] = useState(existingUserReview?.reviewScore ?? 8);        // star rating (1-10), default 8
+    const [text, setText] = useState(existingUserReview?.reviewText ?? "");         // review body / text
     //const [username, setUsername] = useState(""); // optional display name for non-auth users
     const {user} = React.useContext(UserContext);
 
     // UI state
     const [loading, setLoading] = useState(false); // true while POST in progress
     const [error, setError] = useState("");        // error message shown to user
-
     // If no movieId was provided, render nothing (parent should supply movieId)
     if (!movieId) return null;
 
@@ -67,7 +74,7 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
             */
             
             const reviewDTO = {
-                reviewId: null,
+                reviewId: existingUserReview?.reviewId ?? null,
                 userId: user.id,
                 movieId: movieId,
                 reviewText: text,
@@ -81,8 +88,17 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
                     'Authorization': `Bearer ${user.token}`
                 }
             };
-
-            const res = await axios.post(`/api/reviews`, reviewDTO, config);
+            let res;
+            if (existingUserReview == null){
+                res = await axios.post(`/api/reviews`, reviewDTO, config);
+            }
+            else{
+                res = await axios.patch(`/api/reviews/${existingUserReview.reviewId}`, reviewDTO, config);
+                setTitle(reviewDTO.reviewTitle);
+                setText(reviewDTO.reviewText);
+                setStars(reviewDTO.reviewScore);
+                setEditsMade(editsMade + 1);
+            } 
             // If server responds with non-2xx, try to extract body for better debugging
             /*
             if (!res.ok) {
@@ -94,10 +110,11 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
             const created = await res.json();
             */
             // Clear the form after successful post
-            setTitle("");
-            setText("");
-            setStars(8);
-            //setUsername("");
+            //setTitle("");
+            //setText("");
+            //setStars(8);
+            // Reset the field after successful post / edit
+            
 
             // Notify parent if callback provided
             //if (typeof onPosted === "function") onPosted(created);
@@ -123,8 +140,9 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
                 padding: 12,
                 borderRadius: 8
             }}
+            disabled={user === null}
         >
-            <h3 style={{ marginTop: 0 }}>Leave a review</h3>
+            <h3 style={{ marginTop: 0 }}>{existingUserReview ? <>Edit your review</> : <>Leave a review</>}</h3>
 
             {/* Title input */}
             <label style={{ display: "block", marginBottom: 8 }}>
@@ -135,6 +153,7 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
                     onChange={(e) => setTitle(e.target.value)}
                     style={inputStyle}
                     maxLength={120}
+                    disabled={user === null}
                 />
             </label>
 
@@ -149,6 +168,7 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
                         max="10"
                         value={stars}
                         onChange={(e) => setStars(Number(e.target.value))}
+                        disabled={user === null}
                     />
                     {/* display current numeric rating */}
                     <div style={{ minWidth: 36, textAlign: "center", fontWeight: 700 }}>
@@ -165,6 +185,7 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     style={{ ...inputStyle, minHeight: 90 }}
+                    disabled={user === null}
                 />
             </label>
 
@@ -184,24 +205,19 @@ export default function LeaveReview({ movieId, setReviewPosted /*, onPosted, aut
             {/* Show error message if present */}
             {error && <div style={{ color: "crimson", marginBottom: 8 }}>{error}</div>}
 
-            {/* Actions: submit and clear */}
+            {/* Actions: submit and Reset */}
             <div style={{ display: "flex", gap: 8 }}>
-                <button type="submit" disabled={loading} style={buttonStyle}>
-                    {loading ? "Posting…" : "Post review"}
+                <button type="submit" disabled={loading || user === null} style={buttonStyle}>
+                    {loading ? "Posting…" : (existingUserReview ? "Edit review" : "Post Review")}
                 </button>
                 <button
                     type="button"
-                    disabled={loading}
-                    onClick={() => {
-                        // reset fields when 'Clear' clicked
-                        setTitle("");
-                        setText("");
-                        setStars(8);
-                        setUsername("");
-                    }}
+                    disabled={loading || user === null}
+                    onClick={() => resetField(existingUserReview, setTitle, setText, setStars)
+                    }
                     style={{ ...buttonStyle, background: "#f3f3f3", color: "#222" }}
                 >
-                    Clear
+                    Reset
                 </button>
             </div>
         </form>
