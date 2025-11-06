@@ -1,5 +1,8 @@
 // import React hooks used in this component
 import { useEffect, useState } from "react"; // bring in useEffect and useState
+import UsersTable from './UsersTable';
+import ReviewsTable from './ReviewsTable';
+
 
 /**
  * AdminMovies - single-file admin UI for:
@@ -66,6 +69,8 @@ export default function AdminMovies() {
   const [form, setForm] = useState({ ...emptyForm }); // controlled form state initialized to emptyForm
   const [loading, setLoading] = useState(false); // loading indicator for async ops
   const [error, setError] = useState(""); // error message to show to user
+
+ 
 
   /* Load all movies from backend */
   const load = async () => {
@@ -274,6 +279,21 @@ export default function AdminMovies() {
           </tbody>
         </table>
       </div>
+
+       {/* ------------------- USERS TABLE SECTION ------------------- */}
+      <section style={{ marginTop: 24 }}>
+        <h3>Administration — Users</h3>
+        <UsersTable baseUrl="http://localhost:8080" />
+      </section>
+
+       {/* ------------------- REVIEWS TABLE SECTION ------------------- */}
+       <section style={{ marginTop: 24 }}>
+        <h3>Administration — Reviews</h3>
+        <ReviewsTable baseUrl="http://localhost:8080" />
+      </section>
+
+
+      
     </div>
   );
 }

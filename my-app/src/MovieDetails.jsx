@@ -3,12 +3,13 @@
 // Fetches movie data from the backend API using the route param `id` and
 // renders a poster, metadata, cast, and a collapsible raw JSON view.
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 //React component imports
 import Reviews from "./Reviews";
 import LeaveReview from "./LeaveReview";
+import UserContext from "./components/Context/UserContext";
 
 const PLACEHOLDER = "/poster-placeholder.png"; // fallback image when poster is missing or fails to load
 
@@ -16,6 +17,10 @@ export default function MovieDetails() {
     // read the movie id from the URL and get a navigate helper
     const { id } = useParams();
     const navigate = useNavigate();
+
+    //Get user context to check if logged in
+    const { user } = useContext(UserContext); // get logged-in user
+    const isLoggedIn = !!user; // true if user object exists
 
     // local UI state
     const [movie, setMovie] = useState(null); // fetched movie object
@@ -152,8 +157,33 @@ export default function MovieDetails() {
 
                     
                     {/* MOVIEW REVIEWS IMPLEMENTATION*/}
-                    <Reviews movieId={id} reviewPosted={reviewPosted}/>
-                    <LeaveReview movieId={id} setReviewPosted={setReviewPosted}/>
+                    <Reviews movieId={id} reviewPosted={reviewPosted}/>                    
+                     {isLoggedIn ? (
+                            <LeaveReview movieId={movie.id} />
+                        ) : (
+                            <div
+                            style={{
+                                marginTop: 16,
+                                padding: 16,
+                                backgroundColor: "#f0f0f0",
+                                color: "#999",
+                                borderRadius: 8,
+                                textAlign: "center",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => (window.location.href = "/register")}
+                            >
+                            You must register or log in to leave a review. Click here to sign up!
+                            </div>
+                        )}
+
+
+
+
+
+
+
+
                 </div>
             </div>
         </div>
